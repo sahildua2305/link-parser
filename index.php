@@ -1,6 +1,3 @@
-<?php
-//error_reporting(0);
-?>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -25,93 +22,90 @@
 				<input type="submit" name="extract" value="Extract all the links" />
 			</form>
 			
-<?php
-function isValidURL($url)
-{
-    return preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $url);
-}
+			<?php
+				function isValidURL($url){
+				    return preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $url);
+				}
 
-if(isset($_POST['extract']))
-{
-	$url = $_POST['link'];
-	$len = strlen($url);
-	
-	$pieces = explode("/", $url);
-	$result = $pieces[0].'//'.$pieces[2];
-		
-	if(!isValidURL($url))
-	{
-		die("* Please enter valid URL including http://<br>");
-	}
-	
-	$html = file_get_contents($url);
-	
-	$doc = new DOMDocument();
-	@$doc->loadHTML($html);
-	
-	$tags = $doc->getElementsByTagName('a');
-	
-	echo '<textarea disabled name="results" cols="100" rows="15">';
-	
-	foreach($tags as $tag){
-		$href = $tag->getAttribute('href');
-		
-		if(!preg_match("/http:/", $href) && !preg_match("/https:/", $href))
-		{
-			if($href[0] == '/' && $href[1] == '/')
-			{
-				$href = 'http:'.$href;
-			}
-			else if($href[0] == '/')
-			{
-				if($url[($len-1)] == '/')
+				if(isset($_POST['extract']))
 				{
-					$href = $url . $href;
+					$url = $_POST['link'];
+					$len = strlen($url);
+					
+					$pieces = explode("/", $url);
+					$result = $pieces[0].'//'.$pieces[2];
+						
+					if(!isValidURL($url))
+					{
+						die("* Please enter valid URL including http://<br>");
+					}
+					
+					$html = file_get_contents($url);
+					
+					$doc = new DOMDocument();
+					@$doc->loadHTML($html);
+					
+					$tags = $doc->getElementsByTagName('a');
+					
+					echo '<textarea disabled name="results" cols="100" rows="15">';
+					
+					foreach($tags as $tag){
+						$href = $tag->getAttribute('href');
+						
+						if(!preg_match("/http:/", $href) && !preg_match("/https:/", $href))
+						{
+							if($href[0] == '/' && $href[1] == '/')
+							{
+								$href = 'http:'.$href;
+							}
+							else if($href[0] == '/')
+							{
+								if($url[($len-1)] == '/')
+								{
+									$href = $url . $href;
+								}
+								else
+								{
+									$href = $url . '/' . $href;
+								}
+							}
+							else
+							{
+								if($url[($len-1)] == '/')
+								{
+									$href = $url . $href;
+								}
+								else
+								{
+									$href = $url . '/' . $href;
+								}
+							}
+						}
+						
+						echo $href."\n";
+					}
+					echo '</textarea>';
 				}
-				else
-				{
-					$href = $url . '/' . $href;
-				}
-			}
-			else
-			{
-				if($url[($len-1)] == '/')
-				{
-					$href = $url . $href;
-				}
-				else
-				{
-					$href = $url . '/' . $href;
-				}
-			}
-		}
-		
-		echo $href."\n";
-	}
-	echo '</textarea>';
-}
-?>
+			?>
 		</div>
 		
 		<!-- Start of StatCounter Code for Default Guide -->
-<script type="text/javascript">
-var sc_project=9414391; 
-var sc_invisible=1; 
-var sc_security="e15d6b40"; 
-var scJsHost = (("https:" == document.location.protocol) ?
-"https://secure." : "http://www.");
-document.write("<sc"+"ript type='text/javascript' src='" +
-scJsHost+
-"statcounter.com/counter/counter.js'></"+"script>");
-</script>
-<noscript><div class="statcounter"><a title="web statistics"
-href="http://statcounter.com/" target="_blank"><img
-class="statcounter"
-src="http://c.statcounter.com/9414391/0/e15d6b40/1/"
-alt="web statistics"></a></div></noscript>
-<!-- End of StatCounter Code for Default Guide -->
-
-
+		<script type="text/javascript">
+		var sc_project=9414391; 
+		var sc_invisible=1; 
+		var sc_security="e15d6b40"; 
+		var scJsHost = (("https:" == document.location.protocol) ?
+		"https://secure." : "http://www.");
+		document.write("<sc"+"ript type='text/javascript' src='" +
+		scJsHost+
+		"statcounter.com/counter/counter.js'></"+"script>");
+		</script>
+		<noscript><div class="statcounter"><a title="web statistics"
+		href="http://statcounter.com/" target="_blank"><img
+		class="statcounter"
+		src="http://c.statcounter.com/9414391/0/e15d6b40/1/"
+		alt="web statistics"></a></div></noscript>
+		<!-- End of StatCounter Code for Default Guide -->
 		
 	</body>
 </html>
